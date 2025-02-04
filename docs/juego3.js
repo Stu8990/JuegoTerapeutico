@@ -4,7 +4,7 @@ let segundos = 0;
 let minutos = 0; // Minutos del cronómetro
 let cronometroInterval; // Intervalo del cronómetro
 let cronometroPausado = false; // Estado del cronómetro (pausado o no)
-const juego = "Juego3"; 
+const juego = "Juego3";
 
 // Función principal para iniciar el cronómetro
 function iniciarCronometro() {
@@ -30,13 +30,14 @@ function guardarTiempoenlocalstorage() {
     localStorage.setItem('minutos', minutos);
     localStorage.setItem('segundos', segundos);
 }
+//limpiar cronometro
+window.addEventListener("beforeunload", function () {
+    limpiarCronometro(); // Borra los datos del cronómetro cuando el usuario abandona la página
+});
 
 // Inicializar el juego
 window.onload = function () {
-    if (localStorage.getItem('minutos') && localStorage.getItem('segundos')) {
-        minutos = parseInt(localStorage.getItem('minutos'), 10);
-        segundos = parseInt(localStorage.getItem('segundos'), 10);
-    }
+    limpiarCronometro();
     iniciarCronometro();
     document.getElementById('pausarBtn').addEventListener('click', pausarBoton);
     cargarPalabras();
@@ -107,7 +108,7 @@ function asignarEventosArrastrar() {
         item.addEventListener('dragend', function (e) {
             setTimeout(() => this.style.visibility = 'visible', 0);
             draggedItem = null;
-            
+
         });
 
         item.addEventListener('dragover', function (e) {
@@ -135,14 +136,14 @@ function asignarEventosArrastrar() {
 
                 draggedItem.innerHTML = tempHTML;
                 draggedItem.setAttribute('data-weight', tempWeight);
-                
+
                 //verificar orden 
                 verificarOrdenCorrecto();
             } else {
                 //e.error('draggedItem es null, no se puede realizar el intercambio.');
             }
 
-            
+
         });
         item.addEventListener('touchstart', function (e) {
             draggedItem = this;
@@ -160,7 +161,7 @@ function asignarEventosArrastrar() {
                 const touchLocation = e.changedTouches[0];
                 const element = document.elementFromPoint(touchLocation.clientX, touchLocation.clientY);
                 if (element && element.classList.contains('object') && element !== draggedItem) {
-                    
+
                     //verificar longitud de la palabra
                     const palabra1 = this.innerHTML;
                     const palabra2 = draggedItem.innerHTML
@@ -189,7 +190,7 @@ function asignarEventosArrastrar() {
         item.addEventListener('touchmove', function (e) {
             e.preventDefault();
         });
-        
+
     });
 
 }
@@ -223,13 +224,13 @@ function verificarOrdenCorrecto() {
     // Filtrar solo los elementos con la clase 'object'
     const palabrasActuales = Array.from(gameArea.querySelectorAll('.object'))
         .map(child => child.textContent.trim().toLowerCase());
-    
+
     // Verificar que palabrasOrdenadas esté definido
     if (!window.palabrasOrdenadas) {
         console.error('palabrasOrdenadas no está definido.');
         return;
     }
-    
+
     const palabrasCorrectas = window.palabrasOrdenadas.map(p => p.name.trim().toLowerCase());
 
     // Comparar los arrays y cambiar el color de las palabras correctas
@@ -256,8 +257,8 @@ function verificarOrdenCorrecto() {
     // Verificar si todas las palabras están correctas
     if (esCorrecto && palabrasActuales.length === 5) {
         const tiempoActual = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
-                limpiarCronometro();
-                window.location.href = `ventanaGanadora.html?movimientos=${movimiento}&tiempo=${tiempoActual}&juego=${juego}`;
+        limpiarCronometro();
+        window.location.href = `ventanaGanadora.html?movimientos=${movimiento}&tiempo=${tiempoActual}&juego=${juego}`;
     } else {
         //console.log('El orden aún no es correcto.');
         //console.log('Actual:', palabrasActuales);
@@ -267,7 +268,7 @@ function verificarOrdenCorrecto() {
 
 
 //funcion para verificar la longitud
-function verificarLongitudPalabra(palabra){
+function verificarLongitudPalabra(palabra) {
     return palabra.length;
 }
 // Funciones del cronómetro

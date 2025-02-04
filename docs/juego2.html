@@ -241,16 +241,17 @@
                 window.location.href = `ventanaGanadora.html?movimientos=${movimiento}&tiempo=${tiempoActual}&juego=${juego}`;
             }
         }
+        //reinicio de cronometro 
+        window.addEventListener("beforeunload", function () {
+            limpiarCronometro(); // Borra los datos del cronómetro cuando el usuario abandona la página
+        });
+
         //cargar cornometro 
         window.onload = function () {
-            if (localStorage.getItem('minutos') && localStorage.getItem('segundos')) {
-                minutos = parseInt(localStorage.getItem('minutos'), 10);
-                segundos = parseInt(localStorage.getItem('segundos'), 10);
-            }
+            limpiarCronometro(); // Asegura que el cronómetro se reinicie al cargar la página
             iniciarCronometro();
             document.getElementById('pausarBtn').addEventListener('click', pausarBoton);
-        }
-
+        };
         //guardar el tiempo
         function guardarTiempoenlocalstorage() {
             //guardar el tiempo 
