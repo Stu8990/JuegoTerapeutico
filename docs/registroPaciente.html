@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,9 @@
     <!-- Firebase Configuration -->
     <script type="module">
         // Import the functions you need from the SDKs you need
-        import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import {getAuth} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import {getFirestore, doc, setDoc} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -71,41 +72,44 @@
         });
     </script>
 </head>
-<body class="background-image">
-<div class="recuadro font-berlin color-tertiary">
-    <h1>Registro de Paciente</h1>
-    <div class="recuadro-boton">
-        <button id="boton-r" class="boton-regresar border-none back-color-secondary">
-            <img src="../img/Flecha_blanca.png" alt="">
-            Regresar
-        </button>
-    </div>
-    <div class="contenedor-registro font-berlin">
-        <form id="form-registro">
-            <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" id="nombre" placeholder="Ej: Carlos" required>
-            <br>
-            <label for="apellido">Apellido:</label>
-            <input type="text" name="apellido" id="apellido" placeholder="Ej: Zapata" required>
-            <br>
-            <label for="id">Cedula:</label>
-            <input type="text" name="id" id="id" placeholder="Ej: 0123456789" pattern="\d{10}"
-                   title="Debe ser un número de 10 dígitos" required>
-            <br>
-            <label for="edad">Edad:</label>
-            <input type="number" name="edad" id="edad" min="40" required>
-            <br>
-            <p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de inicio de
-                sesión de paciente...</p>
-            <input type="submit" value="Registrar Paciente">
-        </form>
-    </div>
-</div>
 
-<script>
-    document.getElementById('boton-r').addEventListener('click', function () {
-        window.location.href = "paciente.html";
-    });
-</script>
+<body class="background-image">
+    <div class="recuadro font-berlin color-tertiary">
+        <h1>Registro de Paciente</h1>
+        <div class="recuadro-boton">
+            <button id="boton-r" class="boton-regresar border-none back-color-secondary">
+                <img src="../img/Flecha_blanca.png" alt="">
+                Regresar
+            </button>
+        </div>
+        <div class="contenedor-registro font-berlin">
+            <form id="form-registro">
+                <label for="nombre">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" placeholder="Ej: Carlos" required>
+                <br>
+                <label for="apellido">Apellido:</label>
+                <input type="text" name="apellido" id="apellido" placeholder="Ej: Zapata" required>
+                <br>
+                <label for="id">Cédula:</label>
+                <input type="text" name="id" id="id" placeholder="Ej: 0123456789" pattern="\d{10}"
+                    title="Debe ser un número de 10 dígitos" required>
+                <br>
+                <label for="edad">Edad:</label>
+                <input type="number" name="edad" id="edad" min="40" required>
+                <br>
+                <p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de
+                    inicio de
+                    sesión de paciente...</p>
+                <input type="submit" value="Registrar Paciente">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('boton-r').addEventListener('click', function () {
+            window.location.href = "paciente.html";
+        });
+    </script>
 </body>
+
 </html>
