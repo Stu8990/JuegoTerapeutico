@@ -221,6 +221,9 @@ function ordenarLongitudesPalabras(palabras) {
 //verificar el orden
 function verificarOrdenCorrecto() {
     const gameArea = document.getElementById('dropArea');
+    const mensajeError = document.getElementById("mensajeError"); // Selecciona el div del mensaje
+    let hayError = false; // Para saber si hay bloques incorrectos
+
     // Filtrar solo los elementos con la clase 'object'
     const palabrasActuales = Array.from(gameArea.querySelectorAll('.object'))
         .map(child => child.textContent.trim().toLowerCase());
@@ -233,38 +236,45 @@ function verificarOrdenCorrecto() {
 
     const palabrasCorrectas = window.palabrasOrdenadas.map(p => p.name.trim().toLowerCase());
 
-    // Comparar los arrays y cambiar el color de las palabras correctas
-    let esCorrecto = true;
+    let esCorrecto = true; // Para validar si todas están bien
+
     palabrasActuales.forEach((palabra, index) => {
         const elemento = gameArea.querySelectorAll('.object')[index];
+
         if (palabra === '') {
             elemento.classList.add('vacio');
             elemento.classList.remove('correcto', 'incorrecto');
-            //console.log(`Bloque vacío en posición ${index}`);
-            esCorrecto = false; // Si hay un bloque vacío, no es correcto
+            esCorrecto = false;
         } else if (palabra === palabrasCorrectas[index]) {
             elemento.classList.add('correcto');
             elemento.classList.remove('incorrecto', 'vacio');
-            //console.log(`Palabra correcta: ${palabra} en posición ${index}`);
         } else {
             elemento.classList.add('incorrecto');
             elemento.classList.remove('correcto', 'vacio');
-            //console.log(`Palabra incorrecta: ${palabra} en posición ${index}`);
-            esCorrecto = false; // Si hay una palabra incorrecta, no es correcto
+            hayError = true; // Detecta que hay al menos un error
+            esCorrecto = false;
         }
     });
+
+    // Mostrar mensaje si hay error
+    if (hayError) {
+        mensajeError.innerText = "¡Ubicación incorrecta! Intenta mover los bloques de nuevo.";
+        mensajeError.style.display = "block";
+        setTimeout(() => {
+            mensajeError.style.display = "none"; // Ocultar mensaje después de 3 segundos
+        }, 10000);
+    } else {
+        mensajeError.style.display = "none"; // Ocultar mensaje si no hay errores
+    }
 
     // Verificar si todas las palabras están correctas
     if (esCorrecto && palabrasActuales.length === 5) {
         const tiempoActual = `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
         limpiarCronometro();
         window.location.href = `ventanaGanadora.html?movimientos=${movimiento}&tiempo=${tiempoActual}&juego=${juego}`;
-    } else {
-        //console.log('El orden aún no es correcto.');
-        //console.log('Actual:', palabrasActuales);
-        //console.log('Correcto:', palabrasCorrectas);
     }
 }
+
 
 
 //funcion para verificar la longitud

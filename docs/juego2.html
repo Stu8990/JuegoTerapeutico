@@ -71,6 +71,7 @@
             <div class="object" draggable="true" id="bloque3"></div>
             <div class="object" draggable="true" id="bloque4"></div>
             <div class="object" draggable="true" id="bloque5"></div>
+            <p id="mensajeError" class="mensaje-error" style="color: red; font-weight: bold; display: none;"></p>
             <!--<div class="object" draggable="true" id="bloque6" ></div>
             <div class="object" draggable="true" id="bloque7" ></div>-->
         </div>
@@ -218,6 +219,7 @@
         function ordenCorrecto() {
             const bloques = Array.from(document.getElementById('dropArea').querySelectorAll('.object')).filter(obj => obj.style.display !== 'none' && obj.hasAttribute('data-weight'));
             let correctos = 0;
+            let hayError = false;
 
             bloques.forEach((bloque, index) => {
                 const correctWeight = bloque.getAttribute('data-correct-position');
@@ -230,9 +232,20 @@
                     bloque.style.backgroundColor = 'lightgreen';
                 } else {
                     bloque.style.backgroundColor = '#D53032';
+                    hayError = true;
                 }
             });
 
+            // Mostrar mensaje si hay error
+            if (hayError) {
+                mensajeError.innerText = "¡Ubicación incorrecta! Intenta mover los bloques de nuevo.";
+                mensajeError.style.display = "block";
+                setTimeout(() => {
+                    mensajeError.style.display = "none"; // Ocultar mensaje después de 3 segundos
+                }, 10000);
+            } else {
+                mensajeError.style.display = "none"; // Oculta el mensaje si no hay errores
+            }
             // Si todos están correctos
             if (correctos === 5) {
 
