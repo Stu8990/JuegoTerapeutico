@@ -57,7 +57,7 @@
                                 alert("❌ Ya registraste esta cédula anteriormente.");
                             } else {
                                 // Buscar el nombre del terapeuta en la colección de usuarios
-                                const terapeutaRef = doc(db, "usuarios", registradoPorUID);
+                                const terapeutaRef = doc(db, "terapeutas", registradoPorUID);
                                 const terapeutaSnap = await getDoc(terapeutaRef);
 
                                 if (terapeutaSnap.exists()) {
