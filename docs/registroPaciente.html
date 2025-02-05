@@ -30,6 +30,8 @@
         const db = getFirestore();
         const auth = getAuth();
 
+        import { getDoc, collection } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('form-registro').addEventListener('submit', async function (event) {
                 event.preventDefault(); // Evitar envío del formulario
@@ -43,23 +45,46 @@
                 // Verificar que el usuario esté autenticado
                 if (auth.currentUser) {
                     try {
-                        // Almacenar en Firestore
-                        await setDoc(doc(db, "pacientes", id), {
-                            nombre: nombre,
-                            apellido: apellido,
-                            id: id,
-                            edad: edad,
-                            registradoPor: auth.currentUser.uid // Guarda el UID del terapeuta que registra al paciente
-                        });
-                        document.getElementById('form-registro').reset();
-                        // Muestra un mensaje de éxito
-                        document.getElementById('mensaje').style.display = 'block';
+                        const docRef = doc(db, "pacientes", id);
+                        const docSnap = await getDoc(docRef);
 
-                        // Redirige a la página de inicio de sesión después de un breve retraso
-                        setTimeout(function () {
-                            window.location.href = "listadoPacientes.html";
-                        }, 2000); // 2 segundos de retraso
+                        if (docSnap.exists()) {
+                            // Obtener el UID del terapeuta que registró al paciente
+                            const registradoPorUID = docSnap.data().registradoPor;
+                            const usuarioActualUID = auth.currentUser.uid;
 
+                            if (registradoPorUID === usuarioActualUID) {
+                                alert("❌ Ya registraste esta cédula anteriormente.");
+                            } else {
+                                // Buscar el nombre del terapeuta en la colección de usuarios
+                                const terapeutaRef = doc(db, "usuarios", registradoPorUID);
+                                const terapeutaSnap = await getDoc(terapeutaRef);
+
+                                if (terapeutaSnap.exists()) {
+                                    const nombreTerapeuta = terapeutaSnap.data().nombre || "Desconocido";
+
+                                    alert(`❌ Otro terapeuta (${nombreTerapeuta}) ya registró esta cédula.`);
+                                } else {
+                                    alert("❌ Otro terapeuta ya registró esta cédula, pero no se encontró su información.");
+                                }
+                            }
+                        } else {
+                            // Almacenar en Firestore solo si no existe
+                            await setDoc(docRef, {
+                                nombre: nombre,
+                                apellido: apellido,
+                                id: id,
+                                edad: edad,
+                                registradoPor: auth.currentUser.uid
+                            });
+
+                            document.getElementById('form-registro').reset();
+                            document.getElementById('mensaje').style.display = 'block';
+
+                            setTimeout(() => {
+                                window.location.href = "listadoPacientes.html";
+                            }, 2000);
+                        }
 
                     } catch (error) {
                         console.error('Error al registrar al paciente:', error);
@@ -70,6 +95,8 @@
                 }
             });
         });
+
+
     </script>
 </head>
 
