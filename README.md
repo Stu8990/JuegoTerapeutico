@@ -41,4 +41,7 @@ Para preguntas o sugerencias, puedes contactar a:
 - **Ariel Sánchez**: ariel.sanchez@epn.edu.ec  
 - **Andrés Quillupangui**: andres.quillupangui@epn.edu.ec
 
-Este archivo README proporciona una visión general del proyecto, instrucciones claras para la instalación y uso, y directrices para contribuir, facilitando así la colaboración y el entendimiento del propósito del Juego Terapeútico. ::contentReference[oaicite:1]{index=1}
+Para preguntas o sugerencias, puedes contactar a:  
+- **Stuart Palma**: jhou2013x@hotmail.com  
+- **Ariel Sánchez**: ariel.sanchez@epn.edu.ec  
+- **Andrés Quillupangui**: andres.quillupangui@epn.edu.ec

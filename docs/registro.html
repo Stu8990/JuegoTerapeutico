@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar un terapeuta</title>
+    <title>Registrarse</title>
     <link rel="stylesheet" href="../styles/registro.css">
+    <link rel="stylesheet" href="../styles/framework.css">
     <!-- Firebase Configuration -->
     <script type="module">
         // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+        import {initializeApp} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import {
+            getAuth,
+            createUserWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
+        import {getFirestore, doc, setDoc} from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -63,25 +67,42 @@
         });
     </script>
 </head>
-<body>
-    <div class="recuadro">
-        <h1>Registro de Terapeuta</h1>
-        <form id="registroForm">
-            <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" id="nombre" placeholder="Ej: Carlos" required>
-            <br>
-            <label for="apellido">Apellido:</label>
-            <input type="text" name="apellido" id="apellido" placeholder="Ej: Zapata" required>
-            <br>
-            <label for="correo">Correo:</label>
-            <input type="email" name="correo" id="correo" placeholder="Ej: alguien@ejemplo.com" required>
-            <br>
-            <label for="contrasena">Contraseña:</label>
-            <input type="password" name="contrasena" id="contrasena" required>
-            <br>
-            <input type="submit" value="Registrarse">
-        </form>
-        <p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de inicio de sesión...</p>
+<body class="background-image">
+
+<div class="recuadro font-berlin color-tertiary">
+    <h1>Registro de Terapeuta</h1>
+    <div class="recuadro-boton">
+        <button id="boton-r" class="boton-regresar border-none back-color-secondary">
+
+                <img src="../img/Flecha_blanca.png" alt="">
+
+            Regresar
+        </button>
     </div>
+    <form id="registroForm" class="hover-box-shadow">
+        <label for="nombre">Nombre:</label>
+        <input type="text" name="nombre" id="nombre" placeholder="Ej: Carlos" required>
+        <br>
+        <label for="apellido">Apellido:</label>
+        <input type="text" name="apellido" id="apellido" placeholder="Ej: Zapata" required>
+        <br>
+        <label for="correo">Correo:</label>
+        <input type="email" name="correo" id="correo" placeholder="Ej: alguien@ejemplo.com" required>
+        <br>
+        <label for="contrasena">Contraseña:</label>
+        <input type="password" name="contrasena" id="contrasena" required>
+        <br>
+        <p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de inicio de
+            sesión...</p>
+        <input type="submit" value="Registrarse">
+    </form>
+</div>
+
+<script>
+    document.getElementById('boton-r').addEventListener('click', function () {
+        window.location.href = "../index.html";
+    });
+</script>
+
 </body>
 </html>

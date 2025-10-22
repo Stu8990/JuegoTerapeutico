@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrar un terapeuta</title>
-    <link rel="stylesheet" href="../styles/registropaciente.css">
+    <title>Registrar un paciente</title>
+    <link rel="stylesheet" href="../styles/registroPaciente.css">
+    <link rel="stylesheet" href="../styles/framework.css">
     <!-- Firebase Configuration -->
     <script type="module">
         // Import the functions you need from the SDKs you need
@@ -28,8 +30,10 @@
         const db = getFirestore();
         const auth = getAuth();
 
+        import { getDoc, collection } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
         document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('registroForm').addEventListener('submit', async function (event) {
+            document.getElementById('form-registro').addEventListener('submit', async function (event) {
                 event.preventDefault(); // Evitar envío del formulario
 
                 // Obtener los datos del formulario
@@ -41,24 +45,46 @@
                 // Verificar que el usuario esté autenticado
                 if (auth.currentUser) {
                     try {
-                        // Almacenar en Firestore
-                        await setDoc(doc(db, "pacientes", id), {
-                            nombre: nombre,
-                            apellido: apellido,
-                            id: id,
-                            edad: edad,
-                            registradoPor: auth.currentUser.uid // Guarda el UID del terapeuta que registra al paciente
-                        });
-                        alert('Registro exitoso');
-                        document.getElementById('registroForm').reset();
-                        // Muestra un mensaje de éxito
-                        document.getElementById('mensaje').style.display = 'block';
+                        const docRef = doc(db, "pacientes", id);
+                        const docSnap = await getDoc(docRef);
 
-                        // Redirige a la página de inicio de sesión después de un breve retraso
-                        setTimeout(function() {
-                            window.location.href = "idPaciente.html";
-                        }, 2000); // 2 segundos de retraso
+                        if (docSnap.exists()) {
+                            // Obtener el UID del terapeuta que registró al paciente
+                            const registradoPorUID = docSnap.data().registradoPor;
+                            const usuarioActualUID = auth.currentUser.uid;
 
+                            if (registradoPorUID === usuarioActualUID) {
+                                alert("❌ Ya registraste esta cédula anteriormente.");
+                            } else {
+                                // Buscar el nombre del terapeuta en la colección de usuarios
+                                const terapeutaRef = doc(db, "terapeutas", registradoPorUID);
+                                const terapeutaSnap = await getDoc(terapeutaRef);
+
+                                if (terapeutaSnap.exists()) {
+                                    const nombreTerapeuta = terapeutaSnap.data().nombre || "Desconocido";
+
+                                    alert(`❌ Otro terapeuta (${nombreTerapeuta}) ya registró esta cédula.`);
+                                } else {
+                                    alert("❌ Otro terapeuta ya registró esta cédula, pero no se encontró su información.");
+                                }
+                            }
+                        } else {
+                            // Almacenar en Firestore solo si no existe
+                            await setDoc(docRef, {
+                                nombre: nombre,
+                                apellido: apellido,
+                                id: id,
+                                edad: edad,
+                                registradoPor: auth.currentUser.uid
+                            });
+
+                            document.getElementById('form-registro').reset();
+                            document.getElementById('mensaje').style.display = 'block';
+
+                            setTimeout(() => {
+                                window.location.href = "listadoPacientes.html";
+                            }, 2000);
+                        }
 
                     } catch (error) {
                         console.error('Error al registrar al paciente:', error);
@@ -69,27 +95,48 @@
                 }
             });
         });
+
+
     </script>
 </head>
-<body>
-    <div class="conetnedor_registro">
+
+<body class="background-image">
+    <div class="recuadro font-berlin color-tertiary">
         <h1>Registro de Paciente</h1>
-        <form id="registroForm">
-            <label for="nombre">Nombre:</label>
-            <input type="text" name="nombre" id="nombre" placeholder="Ej: Carlos" required>
-            <br>
-            <label for="apellido">Apellido:</label>
-            <input type="text" name="apellido" id="apellido" placeholder="Ej: Zapata" required>
-            <br>
-            <label for="id">Cedula:</label>
-            <input type="text" name="id" id="id" placeholder="Ej: 0123456789" pattern="\d{10}" title="Debe ser un número de 10 dígitos" required>
-            <br>
-            <label for="edad">Edad:</label>
-            <input type="number" name="edad" id="edad" min="40" required>
-            <br><p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de inicio de sesión de paciente...</p>
-            <input type="submit" value="Registrar Paciente">
-        </form>
-        <p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de inicio de sesión...</p>
+        <div class="recuadro-boton">
+            <button id="boton-r" class="boton-regresar border-none back-color-secondary">
+                <img src="../img/Flecha_blanca.png" alt="">
+                Regresar
+            </button>
+        </div>
+        <div class="contenedor-registro font-berlin">
+            <form id="form-registro">
+                <label for="nombre">Nombre:</label>
+                <input type="text" name="nombre" id="nombre" placeholder="Ej: Carlos" required>
+                <br>
+                <label for="apellido">Apellido:</label>
+                <input type="text" name="apellido" id="apellido" placeholder="Ej: Zapata" required>
+                <br>
+                <label for="id">Cédula:</label>
+                <input type="text" name="id" id="id" placeholder="Ej: 0123456789" pattern="\d{10}"
+                    title="Debe ser un número de 10 dígitos" required>
+                <br>
+                <label for="edad">Edad:</label>
+                <input type="number" name="edad" id="edad" min="40" required>
+                <br>
+                <p id="mensaje" style="color: green; display: none;">Registro exitoso. Redirigiendo a la página de
+                    inicio de
+                    sesión de paciente...</p>
+                <input type="submit" value="Registrar Paciente">
+            </form>
+        </div>
     </div>
+
+    <script>
+        document.getElementById('boton-r').addEventListener('click', function () {
+            window.location.href = "paciente.html";
+        });
+    </script>
 </body>
+
 </html>

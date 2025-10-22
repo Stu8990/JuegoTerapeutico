@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Pacientes por Terapeuta</title>
+    <link rel="stylesheet" href="../styles/listadoPacientes.css">
+    <link rel="stylesheet" href="../styles/framework.css">
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCx9LP5qF7Ce55QxcGIKskvppiQGYfYYL0",
+            authDomain: "juegoterrapeuticoepn.firebaseapp.com",
+            projectId: "juegoterrapeuticoepn",
+            storageBucket: "juegoterrapeuticoepn.appspot.com",
+            messagingSenderId: "537931533464",
+            appId: "1:537931533464:web:789d18eddff759799d14ed"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+
+        let pacientes = [];
+        let paginaActual = 1;
+        const registrosPorPagina = 6;
+
+        function cargarPagina(pagina) {
+            const inicio = (pagina - 1) * registrosPorPagina;
+            const fin = inicio + registrosPorPagina;
+            const pacientesPagina = pacientes.slice(inicio, fin);
+
+            const tbody = document.querySelector(".tabla-pacientes tbody");
+            tbody.innerHTML = "";
+
+            pacientesPagina.forEach(paciente => {
+                const fila = `
+                    <tr>
+                        <td>${paciente.nombre}</td>
+                        <td>${paciente.apellido}</td>
+                        <td><a href="tableroJuegos.html?id=${paciente.cedula}" class="link-paciente"       onclick="localStorage.setItem('cedulaPaciente', '${paciente.cedula}')">       ${paciente.cedula}</a></td>
+                        <td>${paciente.edad}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML("beforeend", fila);
+            });
+
+            actualizarBotones();
+        }
+
+        function actualizarBotones() {
+            const totalPaginas = Math.ceil(pacientes.length / registrosPorPagina);
+            const contenedorBotones = document.getElementById("botones-paginacion");
+            contenedorBotones.innerHTML = "";
+
+            for (let i = 1; i <= totalPaginas; i++) {
+                const boton = document.createElement("button");
+                boton.textContent = i;
+                boton.classList.add("boton-pagina");
+                if (i === paginaActual) boton.classList.add("activo");
+
+                boton.addEventListener("click", () => {
+                    paginaActual = i;
+                    cargarPagina(paginaActual);
+                });
+                contenedorBotones.appendChild(boton);
+            }
+        }
+
+        async function obtenerPacientesPorTerapeuta() {
+            const idTerapeuta = localStorage.getItem("idTerapeuta");
+
+            if (!idTerapeuta) {
+                alert("No se encontró un ID de terapeuta en sesión. Inicie sesión nuevamente.");
+                return;
+            }
+
+            try {
+                const q = query(collection(db, "pacientes"), where("registradoPor", "==", idTerapeuta));
+                const querySnapshot = await getDocs(q);
+
+                pacientes = [];
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    pacientes.push({
+                        nombre: data.nombre,
+                        apellido: data.apellido,
+                        cedula: doc.id,
+                        edad: data.edad
+                    });
+                });
+
+                if (pacientes.length > 0) {
+                    cargarPagina(1);
+                } else {
+                    document.getElementById("pacientesContainer").innerHTML = "<p>No hay pacientes registrados.</p>";
+                }
+            } catch (error) {
+                console.error("Error al obtener los pacientes: ", error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", obtenerPacientesPorTerapeuta);
+
+        window.filtrarPacientes = function () {
+            const filtro = document.getElementById("buscadorPacientes").value.toLowerCase();
+            const filas = document.querySelectorAll(".tabla-pacientes tbody tr");
+
+            filas.forEach(fila => {
+                const nombre = fila.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                const cedula = fila.querySelector("td:nth-child(3)").textContent.toLowerCase();
+
+                if (nombre.includes(filtro) || cedula.includes(filtro)) {
+                    fila.style.display = "";
+                } else {
+                    fila.style.display = "none";
+                }
+            });
+        };
+    </script>
+</head>
+
+<body class="background-image">
+    <div class="contenedor">
+        <div class="recuadro-boton">
+            <button id="boton-r" class="boton-regresar border-none back-color-secondary">
+                <img src="../img/Flecha_blanca.png" alt="">
+                Regresar
+            </button>
+        </div>
+
+        <h1 class="font-berlin">Listado de Pacientes por Terapeuta</h1>
+        <p>Selecciona la cédula del paciente o busca por su nombre o cédula.</p>
+
+        <div class="buscador-container">
+            <input type="text" id="buscadorPacientes" placeholder="Buscar por nombre o cédula"
+                onkeyup="filtrarPacientes()">
+        </div>
+
+        <div id="pacientesContainer" class="pacientes-container">
+            <table class="tabla-pacientes">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Cédula</th>
+                        <th>Edad</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+
+        <div id="botones-paginacion" class="botones-paginacion"></div>
+    </div>
+
+    <script>
+        document.getElementById('boton-r').addEventListener('click', function () {
+            window.location.href = "paciente.html";
+        });
+    </script>
+</body>
+
+</html>

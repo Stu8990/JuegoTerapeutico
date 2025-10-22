@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tablero de Juegos</title>
+    <link rel="stylesheet" href="../styles/tableroJuegos.css">
+    <link rel="stylesheet" href="../styles/framework.css">
+</head>
+<header class="back-color-secondary color-primary">
+    <div class="barra">
+        <p class="font-berlin">
+            Saludos, <span id="nombre-terapeuta"></span>
+            <br>
+            Paciente: <span id="idPaciente"></span>
+        </p>
+        <div class="contenedor-botones">
+            <div class="boton-elegir-paciente back-color-primary margin-0" onclick="document.getElementById('enlace-estadisticas').click()">
+                <a id="enlace-estadisticas" class="color-secondary hover-a font-impact" href="estadisticasPaciente.html">Ver
+                    estadísticas</a>
+            </div>
+            <div id="boton-elegir-paciente" class="boton-elegir-paciente back-color-primary margin-0" onclick="cerrarSesion(); document.getElementById('enlace-elegir-paciente').click()">
+                <a id="enlace-elegir-paciente" class="color-secondary hover-a font-impact" href="paciente.html">Elegir otro
+                    paciente</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<body class="background-image">
+    <h1 class="titulo-tablero font-hartsfolk">
+        Tablero de Juegos
+    </h1>
+    <div class="recuadros-juegos">
+        <div class="recuadro-juego">
+            <h2>Juego 1</h2>
+            <img src="../img/Ejemplo_juego.png" alt="">
+            <p>Ordena objetos del más liviano al más pesado.</p>
+            <a class="boton-jugar" href="submenu1.html">Jugar</a>
+        </div>
+        <div class="recuadro-juego">
+            <h2>Juego 2</h2>
+            <img src="../img/Ejemplo_juego.png" alt="">
+            <p>Ordena objetos del más pesado al más liviano.</p>
+            <a class="boton-jugar" href="submenu2.html">Jugar</a>
+        </div>
+        <div class="recuadro-juego">
+            <h2>Juego 3</h2>
+            <img src="../img/Ejemplo_juego.png" alt="">
+            <p>Ordena palabras de las más corta a la más larga.</p>
+            <a class="boton-jugar" href="juego3.html">Jugar</a>
+        </div>
+    </div>
+    <script>
+        function cerrarSesion() {
+            localStorage.removeItem('cedulaPaciente');
+            localStorage.removeItem('nombreTerapeuta');
+            window.location.href = "loginPaciente.html"; // Redirige al inicio de sesión
+        }
+
+        // Obtener el ID del paciente del localStorage y mostrarlo
+        const idPaciente = localStorage.getItem('cedulaPaciente');
+        if (!idPaciente) {
+            console.warn('No se encontró el ID del paciente en localStorage.');
+        } else {
+            //console.log(`ID del paciente recuperado: ${idPaciente}`);
+            document.getElementById('idPaciente').textContent = idPaciente;
+        }
+
+        // Obtener el nombre del terapeuta del localStorage y mostrarlo
+        const nombreTerapeuta = localStorage.getItem('nombreTerapeuta');
+        if (nombreTerapeuta) {
+            //console.log('Nombre del terapeuta:', nombreTerapeuta);
+            document.getElementById('nombre-terapeuta').textContent = nombreTerapeuta;
+        } else {
+            console.log('No se encontró el nombre del terapeuta en localStorage.');
+        }
+    </script>
+</body>
+
+</html>
